@@ -15,21 +15,25 @@ var Q = window.Q = Quintus()
 	    init: function(p) {
 	      this._super(p,{
 	        sheet: "marioR",
-	        x: 250,
-	        y: 250,
+	        x: 100,
+	        y: 450,
 	        frame: 0,
 	        scale: 1
 	      });
 		  this.add("2d, platformerControls");
-	      /*Q.input.on("left", this, function() { this.p.x -= 10; });
-	      Q.input.on("right", this, function() { this.p.x += 10; });
-	      Q.input.on("up", this, function() { this.p.y -= 10; });
-	      Q.input.on("down", this, function() { this.p.y += 10; });*/
-
-	    }
+	    },
+		step: function(){			
+			if(this.p.y > 600){
+				this.respawn();	
+			}
+		},
+		respawn : function(){
+			this.p.x = 100;
+			this.p.y = 450;
+		}
 	  });
 
-	Q.Sprite.extend("OneUp", {
+	/*Q.Sprite.extend("OneUp", {
 	    init: function(p) {
 	      this._super(p,{
 	        asset: "1up.png",
@@ -39,26 +43,54 @@ var Q = window.Q = Quintus()
 			sensor: true
 	      });
 	    }
-	  });
+	  });*/
 
+	Q.Sprite.extend("Goomba", {
+		init: function(p) {
+			this._super(p, {
+				sheet:"goomba",
+				frame:1,
+				scale: 1,
+				vx:100,
+				sensor: true
+			});
+			this.add('2d, aiBounce');
+			
+			this.on("bump.top",function(collision) {
+				if(collision.obj.isA("Mario")) { 
+				  this.destroy();
+				  collision.obj.p.vy = -300;
+				}
+			});
 
-	Q.load([ "mario_small.png","mario_small.json", "1up.png", "bg.png", "mapa2021.tmx", "tiles.png" ], function() {
+			this.on("bump.left,bump.right,bump.bottom",function(collision) {
+				if(collision.obj.isA("Mario")) { 
+					collision.obj.respawn();
+				}
+			});
+		}
+	});
+
+	Q.load([ "mario_small.png","mario_small.json", 
+		"1up.png", "bg.png", "Practica3.tmx", 
+		"tiles32.png", "goomba.png", "bloopa.png",
+		"princess.png", "coin.png", "goomba.json" ], function() {
 	 
 	  Q.compileSheets("mario_small.png","mario_small.json");
-	  
+	  Q.compileSheets("goomba.png", "goomba.json");
 	   Q.scene("level1", function(stage) {
 		 	/*
 	   		stage.insert(
 	   			new Q.Repeater({asset: "bg.png", speedX: 0.5, speedY: 0.5})
 	   		);
 	   		*/
-	   		Q.stageTMX("mapa2021.tmx", stage);
+	   		Q.stageTMX("Practica3.tmx", stage);
 
 		 	mario = new Q.Mario();
 		 	stage.insert(mario);
 		 	 
 		 	stage.add("viewport").follow(mario,{x:true, y:false});
-		 	stage.viewport.scale = .70;
+		 	stage.viewport.scale = 1;
 		 	stage.viewport.offsetX = -150;
 		    stage.on("destroy",function() {
 		        mario.destroy();

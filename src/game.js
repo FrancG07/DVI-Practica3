@@ -49,7 +49,7 @@ var Q = window.Q = Quintus()
 		init: function(p) {
 			this._super(p, {
 				sheet:"goomba",
-				frame:1,
+				frame:0,
 				scale: 1,
 				vx:100,
 				sensor: true
@@ -71,13 +71,48 @@ var Q = window.Q = Quintus()
 		}
 	});
 
+	Q.Sprite.extend("Bloopa", {
+		init: function(p) {
+			this._super(p, {
+				sheet:"bloopa",
+				frame:0,
+				scale: 1,
+				sensor: true,
+				gravity: 0.3
+			});
+			this.add('2d, aiBounce');
+			
+			this.on("bump.top",function(collision) {
+				if(collision.obj.isA("Mario")) { 
+				  this.destroy();
+				  collision.obj.p.vy = -300;
+				}
+			});
+
+			this.on("bump.left,bump.right,bump.bottom",function(collision) {				
+				if(collision.obj.isA("Mario")) { 
+					collision.obj.respawn();
+				}else{
+					this.p.vy = -200;
+				}
+			});
+
+		},
+		step: function(){
+			
+		}
+	});
+
 	Q.load([ "mario_small.png","mario_small.json", 
 		"1up.png", "bg.png", "Practica3.tmx", 
 		"tiles32.png", "goomba.png", "bloopa.png",
-		"princess.png", "coin.png", "goomba.json" ], function() {
+		"princess.png", "coin.png", "goomba.json",
+		"bloopa.json" ], function() {
 	 
 	  Q.compileSheets("mario_small.png","mario_small.json");
 	  Q.compileSheets("goomba.png", "goomba.json");
+	  Q.compileSheets("bloopa.png", "bloopa.json");
+
 	   Q.scene("level1", function(stage) {
 		 	/*
 	   		stage.insert(

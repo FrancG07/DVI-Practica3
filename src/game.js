@@ -24,7 +24,7 @@ var Q = window.Q = Quintus()
 	    },
 		step: function(){			
 			if(this.p.y > 600){
-				this.respawn();	
+				this.die();	
 			}
 		},
 		die : function(){

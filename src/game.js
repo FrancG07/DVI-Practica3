@@ -103,11 +103,30 @@ var Q = window.Q = Quintus()
 		}
 	});
 
+	Q.Sprite.extend("Peach", {
+		init: function(p){
+			this._super(p, {
+				asset: "princess.png",
+				scale: 1,
+	     		x: 20,
+	     		y: -10,
+				sensor: true
+			})
+			this.on("hit", this, "collision");
+		},
+		collision: function(col){
+			if(col.obj.isA("Mario")){
+				// Mostrar victoria
+				Q.stageScene("level1");
+			}
+		}
+	});
+
 	Q.load([ "mario_small.png","mario_small.json", 
 		"1up.png", "bg.png", "Practica3.tmx", 
 		"tiles32.png", "goomba.png", "bloopa.png",
 		"princess.png", "coin.png", "goomba.json",
-		"bloopa.json" ], function() {
+		"bloopa.json", "princess.png" ], function() {
 	 
 	  Q.compileSheets("mario_small.png","mario_small.json");
 	  Q.compileSheets("goomba.png", "goomba.json");

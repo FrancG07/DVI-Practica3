@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.5" tiledversion="1.5.0" orientation="orthogonal" renderorder="right-down" width="100" height="100" tilewidth="32" tileheight="32" infinite="0" nextlayerid="5" nextobjectid="14">
+<map version="1.5" tiledversion="1.5.0" orientation="orthogonal" renderorder="right-down" width="100" height="100" tilewidth="32" tileheight="32" infinite="0" nextlayerid="5" nextobjectid="15">
  <tileset firstgid="1" name="TilesMario" tilewidth="32" tileheight="32" tilecount="228" columns="19">
   <image source="../images/tiles32.png" trans="ff00ff" width="608" height="384"/>
  </tileset>
@@ -89,6 +89,11 @@
  </tileset>
  <tileset firstgid="244" name="Princess" tilewidth="30" tileheight="48" tilecount="1" columns="1">
   <image source="../images/princess.png" trans="ff00ff" width="30" height="48"/>
+  <tile id="0">
+   <properties>
+    <property name="Class" value="Peach"/>
+   </properties>
+  </tile>
  </tileset>
  <tileset firstgid="245" name="Coin" tilewidth="32" tileheight="32" tilecount="3" columns="3">
   <image source="../images/coin.png" trans="ff00ff" width="102" height="34"/>
@@ -10106,5 +10111,6 @@
  <objectgroup id="4" name="Enemies">
   <object id="9" gid="229" x="544" y="540.667" width="32" height="32"/>
   <object id="11" gid="241" x="847.333" y="446.667" width="32" height="32"/>
+  <object id="14" gid="244" x="1185" y="541.333" width="30" height="48"/>
  </objectgroup>
 </map>

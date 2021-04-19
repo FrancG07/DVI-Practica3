@@ -134,7 +134,7 @@ var Q = window.Q = Quintus()
 		"1up.png", "bg.png", "Practica3.tmx", 
 		"tiles32.png", "goomba.png", "bloopa.png",
 		"princess.png", "coin.png", "goomba.json",
-		"bloopa.json", "princess.png" ], function() {
+		"bloopa.json", "princess.png", "title-screen.png" ], function() {
 	 
 	  Q.compileSheets("mario_small.png","mario_small.json");
 	  Q.compileSheets("goomba.png", "goomba.json");
@@ -173,7 +173,7 @@ var Q = window.Q = Quintus()
 			// and restart the game.
 			button.on("click",function() {
 				Q.clearStages();
-				Q.stageScene('level1');
+				Q.stageScene('mainTitle');
 			});
 
 			// Expand the container to visibly fit it's contents
@@ -181,9 +181,22 @@ var Q = window.Q = Quintus()
 			container.fit(20);
 		});
 
+		Q.scene('mainTitle', function(stage){
+			var container = stage.insert(new Q.UI.Container({
+				x: Q.width/2, y: Q.height/2, fill: "rgba(0,0,0,0.5)"
+			}));
+			var button = container.insert(new Q.UI.Button({
+				x: 0, y: 0, fill: "#CCCCCC", asset: "title-screen.png"
+			}));
 
+			button.on("click", function(){
+				Q.stageScene('level1');
+			});
 
-	   Q.stageScene("level1");
+			container.fit(20);
+		});
+
+	   Q.stageScene("mainTitle");
 
 	});
 }

@@ -19,8 +19,7 @@ var Q = window.Q = Quintus()
 	        x: 100,
 	        y: 450,
 	        frame: 0,
-	        scale: 1,
-			direction:'right'
+	        scale: 1
 	      });
 		  this.add("2d, platformerControls, animation");
 	    },
@@ -37,19 +36,11 @@ var Q = window.Q = Quintus()
 			}
 			
 			if(this.p.vy < 0){
-				if(this.p.vx < 0)
+				if(this.p.direction == 'left')
 					this.play("jump_left");
-				else if(this.p.vx > 0)
+				else if(this.p.direction == 'right')
 					this.play("jump_right");
-				else{
-					if(this.p.direction == 'right')
-						this.play("jump_right")
-					else
-						this.play("jump_left");
-				}
-					
-			};
-
+			}
 			
 		},
 		die : function(){

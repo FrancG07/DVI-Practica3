@@ -14,17 +14,27 @@ var Q = window.Q = Quintus()
 	    
 	    init: function(p) {
 	      this._super(p,{
-	        sheet: "marioR",
+	        sheet: "mario",
+			sprite: "mario_anim",
 	        x: 100,
 	        y: 450,
 	        frame: 0,
 	        scale: 1
 	      });
-		  this.add("2d, platformerControls");
+		  this.add("2d, platformerControls, animation");
 	    },
-		step: function(){			
-			if(this.p.y > 600){
-				this.die();	
+		step: function(dt){			
+			if(this.p.vx > 0){
+				this.play("walk_right");
+			} else if(this.p.vx < 0){
+				this.play("walk_left");
+			}
+			
+			if(this.p.vy < 0){
+				if(this.p.vx < 0)
+					this.play("jump_left");
+				else if(this.p.vx > 0)
+					this.play("jump_right");
 			}
 		},
 		die : function(){
@@ -46,23 +56,40 @@ var Q = window.Q = Quintus()
 	        scale: 1,
 	     	x: 20,
 	     	y: -10,
-			sensor: true
+			sensor: true,
+			taken: false
 	      });
-	    }
+		  this.on("sensor", this, "hit");
+		  this.add("tween");
+	    },
+		hit: function(collision){
+			if(this.taken) return;
+			if(!collision.isA("Mario")) return;
+			
+			this.taken = true;
+			Q.state.inc("lives",1);
+			console.log(Q.state.get("lives"));
+			collision.p.vy = -400;
+			
+			this.animate({y: this.p.y-100, angle: 360}, 1, Q.Easing.Quadratic.InOut,
+						{callback: function(){this.destroy()}});
+		}
 	  });*/
 
 	Q.Sprite.extend("Goomba", {
 		init: function(p) {
 			this._super(p, {
 				sheet:"goomba",
+				sprite: "goomba_anim",
 				frame:0,
 				scale: 1,
 				vx:100,
 				sensor: true
 			});
-			this.add('2d, aiBounce');
-			
-			this.on("bump.top",function(collision) {
+			this.add('2d, aiBounce, animation');
+			this.on("bump.top", this, "onTop");
+			this.on("bump.bottom, bump.left, bump.right", this, "kill");
+			/*this.on("bump.top",function(collision) {
 				if(collision.obj.isA("Mario")) { 
 				  this.destroy();
 				  collision.obj.p.vy = -300;
@@ -73,7 +100,28 @@ var Q = window.Q = Quintus()
 				if(collision.obj.isA("Mario")) { 
 					collision.obj.die();
 				}
-			});
+			});*/
+		},
+		onTop: function(collision){
+			if(!collision.obj.isA("Mario")) return;
+			collision.obj.p.vy = -200;
+			console.log("Goomba dies");
+			this.play("die");
+			this.destroy();
+		},
+		kill: function(collision){
+			if(!collision.obj.isA("Mario")) return;
+			collision.obj.p.vy = -200;
+			collision.obj.p.vx = collision.normalX*-500;
+			collision.obj.p.x = collision.normalX*-5;
+			Q.state.dec("lives",1);
+			console.log(Q.state.get("lives"));
+			if(Q.state.get("lives") < 0)
+				collision.obj.destroy();
+			collision.obj.die();
+		},
+		step: function(dt){			
+			this.play("walk");
 		}
 	});
 
@@ -81,12 +129,13 @@ var Q = window.Q = Quintus()
 		init: function(p) {
 			this._super(p, {
 				sheet:"bloopa",
+				sprite: "bloopa_anim",
 				frame:0,
 				scale: 1,
 				sensor: true,
 				gravity: 0.3
 			});
-			this.add('2d, aiBounce');
+			this.add('2d, aiBounce, animation');
 			
 			this.on("bump.top",function(collision) {
 				if(collision.obj.isA("Mario")) { 
@@ -104,8 +153,11 @@ var Q = window.Q = Quintus()
 			});
 
 		},
-		step: function(){
-			
+		step: function(dt){
+			if(this.p.y < 510)
+				this.play("up");
+			else if (this.p.y > 510)
+				this.play("down");
 		}
 	});
 
@@ -140,6 +192,25 @@ var Q = window.Q = Quintus()
 	  Q.compileSheets("goomba.png", "goomba.json");
 	  Q.compileSheets("bloopa.png", "bloopa.json");
 
+		Q.animations("mario_anim",{
+			walk_right: {frames: [1,2,3],rate: 1/6, next: "parado_r" },
+			walk_left: {frames: [15,16,17],rate: 1/6, next: "parado_l" },
+			jump_right: {frames: [4],rate: 1/6, next: "parado_r" },
+			jump_left: {frames: [18],rate: 1/6, next: "parado_l" },
+			parado_r: {frames: [0] },
+			parado_l: {frames: [14] },
+			morir:{frames: [12], loop:false,rate:1}
+		});
+		Q.animations("goomba_anim",{
+			walk: {frames: [0,1],rate: 1},
+			die: {frames: [2],rate: 1}
+		});
+		Q.animations("bloopa_anim",{
+			up: {frames: [0],rate: 1},
+			down: {frames: [1],rate: 1},
+			die: {frames: [2],rate: 1}
+		});
+		
 	   Q.scene("level1", function(stage) {
 		 	/*
 	   		stage.insert(
@@ -175,6 +246,10 @@ var Q = window.Q = Quintus()
 				Q.clearStages();
 				Q.stageScene('mainTitle');
 			});
+			
+			/*Q.input.on("confirm",this, function(){
+				Q.stageScene('level1');
+			});*/
 
 			// Expand the container to visibly fit it's contents
 			// (with a padding of 20 pixels)

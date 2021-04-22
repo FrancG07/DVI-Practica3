@@ -19,14 +19,20 @@ var Q = window.Q = Quintus()
 	        x: 100,
 	        y: 450,
 	        frame: 0,
-	        scale: 1
+	        scale: 1,
+			direction:'right'
 	      });
 		  this.add("2d, platformerControls, animation");
 	    },
-		step: function(dt){			
+		step: function(dt){		
+			if(this.p.y > 600){
+				this.die();
+			}
 			if(this.p.vx > 0){
+				this.direction = 'right';
 				this.play("walk_right");
 			} else if(this.p.vx < 0){
+				this.direction = 'left';
 				this.play("walk_left");
 			}
 			
@@ -35,7 +41,16 @@ var Q = window.Q = Quintus()
 					this.play("jump_left");
 				else if(this.p.vx > 0)
 					this.play("jump_right");
-			}
+				else{
+					if(this.p.direction == 'right')
+						this.play("jump_right")
+					else
+						this.play("jump_left");
+				}
+					
+			};
+
+			
 		},
 		die : function(){
 			Q.stage().pause();
@@ -117,7 +132,7 @@ var Q = window.Q = Quintus()
 			Q.state.dec("lives",1);
 			console.log(Q.state.get("lives"));
 			if(Q.state.get("lives") < 0)
-				collision.obj.destroy();
+				collision.obj.die();
 			collision.obj.die();
 		},
 		step: function(dt){			

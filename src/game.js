@@ -1,6 +1,6 @@
 var game = function() {
 
-var Q = window.Q = Quintus({audioSupported: ['mp3', 'ogg'] })
+var Q = window.Q = Quintus()
 		.include(["Sprites", "Scenes", "Input", "2D", "UI", "Anim", "TMX", "Touch", "Audio"])
         .setup("myGame", {
 			width: 800,
@@ -30,6 +30,9 @@ var Q = window.Q = Quintus({audioSupported: ['mp3', 'ogg'] })
 				this.die();
 			}
 			
+			if(this.p.died){
+				this.p.vx = 0;
+			}
 			if(this.p.vx > 0){
 				this.play("walk_right");
 			} else if(this.p.vx < 0){
@@ -126,9 +129,23 @@ var Q = window.Q = Quintus({audioSupported: ['mp3', 'ogg'] })
 		}
 	  });
 
-	/*Q.Component.extend("defaultEnemy"){
-		
-	}*/
+	Q.Component.extend("defaultEnemy", {
+		kill: function(collision){
+			if(this.killed) return;
+			if(!collision.obj.isA("Mario")) return;
+			
+			Q.state.dec("lives",1);
+			console.log(Q.state.get("lives"));
+			if(Q.state.get("lives") < 0)
+				collision.obj.die();
+			else{
+				collision.obj.p.vy = -200;
+				collision.obj.p.vx = collision.normalX*-500;
+				collision.obj.p.x = 100;
+				collision.obj.p.direction = "right";
+			}
+		}
+	});
 	
 	Q.Sprite.extend("Goomba", {
 		init: function(p) {
@@ -142,7 +159,7 @@ var Q = window.Q = Quintus({audioSupported: ['mp3', 'ogg'] })
 				killed: false
 			});
 			//this.on("sensor", this, "onTop");
-			this.add('2d, aiBounce, tween, animation');
+			this.add('2d, aiBounce, tween, animation, defaultEnemy');
 			this.on("bump.top", this, "onTop");
 			this.on("bump.bottom, bump.left, bump.right", this, "kill");
 			/*this.on("bump.top",function(collision) {
@@ -161,6 +178,7 @@ var Q = window.Q = Quintus({audioSupported: ['mp3', 'ogg'] })
 		onTop: function(collision){
 			if(this.killed) return;
 			if(!collision.obj.isA("Mario")) return;
+			if(collision.obj.p.died) return;
 			
 			this.killed = true;
 			collision.obj.p.vy = -200;
@@ -174,6 +192,7 @@ var Q = window.Q = Quintus({audioSupported: ['mp3', 'ogg'] })
 		kill: function(collision){
 			if(this.killed) return;
 			if(!collision.obj.isA("Mario")) return;
+			if(collision.obj.p.died) return;
 			
 			Q.state.dec("lives",1);
 			console.log(Q.state.get("lives"));

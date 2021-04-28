@@ -7,7 +7,7 @@ var Q = window.Q = Quintus()
 			height: 600,
 			scaleToFit: true
 		})
-        .controls().touch();
+        .controls().enableSound().touch();
 
 
 	Q.Sprite.extend("Mario", {
@@ -50,6 +50,8 @@ var Q = window.Q = Quintus()
 		},
 		die: function(){
 			this.p.died = true;
+			Q.audio.stop();
+			Q.audio.play("music_die.mp3");
 			this.play("morir");
 			this.animate({y: this.p.y-30}, 1/2, Q.Easing.Linear, 
 				{callback: function(){
@@ -372,8 +374,8 @@ var Q = window.Q = Quintus()
 				Q.stageScene('mainTitle');
 			});
 			
-			//Q.audio.stop("music_main.mp3");
-			Q.audio.play("music_die.mp3");
+			//Q.audio.stop();
+			//Q.audio.play("music_die.mp3");
 			/*Q.input.on("confirm",this, function(){
 				Q.stageScene('level1');
 			});*/

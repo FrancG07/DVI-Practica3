@@ -9,6 +9,33 @@ var Q = window.Q = Quintus()
 		})
         .controls().enableSound().touch();
 
+	Q.component("dancer",{
+		extend:{
+			dance: function(){
+				this.p.angle == 0;
+				this.animate({angle:360},0.5, Q.Easing.Quadratic.In);
+			}
+		}
+	});
+	
+	Q.Component("defaultEnemy", {
+		extend: { 
+			hitMario: function(collision){
+				if(this.killed) return;
+				if(!collision.obj.isA("Mario")) return;
+				
+				console.log(Q.state.get("lives"));
+				if(Q.state.get("lives") < 0)
+					collision.obj.die();
+				else{
+					collision.obj.p.vy = -200;
+					collision.obj.p.vx = collision.normalX*-500;
+					collision.obj.p.x = 100;
+					collision.obj.p.direction = "right";
+				}
+			}
+		}
+	});
 
 	Q.Sprite.extend("Mario", {
 	    
@@ -22,11 +49,12 @@ var Q = window.Q = Quintus()
 	        scale: 1,
 			died: false
 	      });
-		  this.add("2d, platformerControls, animation, tween");
+		  this.add("2d, platformerControls, animation, tween, dancer");
 		  Q.input.on("up", this, function(){
 			  if(this.p.vy == 0)
-			  Q.audio.play("jump_small.mp3")
+				Q.audio.play("jump_small.mp3");
 		  });
+		  Q.input.on("fire", this, "dance");
 	    },
 		step: function(dt){
 			
@@ -43,7 +71,6 @@ var Q = window.Q = Quintus()
 				this.play("walk_left");
 			}
 			
-			//alert(this.p.landed);
 			if(this.p.vy < 0){
 				if(this.p.direction == 'left')
 					this.play("jump_left");
@@ -55,17 +82,19 @@ var Q = window.Q = Quintus()
 		die: function(){
 			if(this.p.died) return;
 			this.p.died = true;
+			
 			Q.audio.stop();
 			Q.audio.play("music_die.mp3");
+			
 			this.play("morir");
 			this.animate({y: this.p.y-30}, 1/2, Q.Easing.Linear, 
 				{callback: function(){
-			this.animate({y: this.p.y+60}, 1/2, Q.Easing.Linear,
+					this.animate({y: this.p.y+60}, 1/2, Q.Easing.Linear,
 						{callback: function(){
-			Q.stage().pause();
-			Q.stageScene("endGame",2, {
-				label: "You lose"
-			})}})}});
+							Q.stage().pause();
+							Q.stageScene("endGame",2, {
+								label: "You lose"})
+			}})}});
 		},
 		respawn : function(){
 			this.p.x = 100;
@@ -93,11 +122,7 @@ var Q = window.Q = Quintus()
 			this.taken = true;
 			Q.state.inc("lives",1);
 			console.log(Q.state.get("lives"));
-			//collision.p.vy = -400;
-			
 			Q.audio.play("1up.mp3");
-			//this.animate({y: this.p.y-100, angle: 360}, 1, Q.Easing.Quadratic.InOut,
-			//			{callback: function(){this.destroy()}});
 			this.destroy();
 		}
 	  });
@@ -128,31 +153,12 @@ var Q = window.Q = Quintus()
 			this.taken = true;
 			Q.state.inc("coins",1);
 			console.log(Q.state.get("coins"));
-			//collision.p.vy = -400;
 			
 			Q.audio.play("coin.mp3");
 			this.animate({y: this.p.y-100}, 1/2, Q.Easing.Linear,
 						{callback: function(){this.destroy()}});
 		}
 	  });
-
-	Q.Component.extend("defaultEnemy", {
-		kill: function(collision){
-			if(this.killed) return;
-			if(!collision.obj.isA("Mario")) return;
-			
-			Q.state.dec("lives",1);
-			console.log(Q.state.get("lives"));
-			if(Q.state.get("lives") < 0)
-				collision.obj.die();
-			else{
-				collision.obj.p.vy = -200;
-				collision.obj.p.vx = collision.normalX*-500;
-				collision.obj.p.x = 100;
-				collision.obj.p.direction = "right";
-			}
-		}
-	});
 	
 	Q.Sprite.extend("Goomba", {
 		init: function(p) {
@@ -165,10 +171,12 @@ var Q = window.Q = Quintus()
 				//sensor: true,
 				killed: false
 			});
-			//this.on("sensor", this, "onTop");
+			
 			this.add('2d, aiBounce, tween, animation, defaultEnemy');
 			this.on("bump.top", this, "onTop");
 			this.on("bump.bottom, bump.left, bump.right", this, "kill");
+			//this.on(collision, this, "hitMario");
+			//this.on()
 			/*this.on("bump.top",function(collision) {
 				if(collision.obj.isA("Mario")) { 
 				  this.destroy();
@@ -194,7 +202,6 @@ var Q = window.Q = Quintus()
 			
 			this.animate({y: this.p.y+100, x: this.p.x}, 1, Q.Easing.Linear,
 						{callback: function(){this.destroy()}});
-			//this.destroy();
 		},
 		kill: function(collision){
 			if(this.killed) return;
@@ -202,7 +209,6 @@ var Q = window.Q = Quintus()
 			if(collision.obj.p.died) return;
 			
 			Q.state.dec("lives",1);
-			console.log(Q.state.get("lives"));
 			if(Q.state.get("lives") < 0)
 				collision.obj.die();
 			else{
@@ -292,7 +298,7 @@ var Q = window.Q = Quintus()
 	});
 
 	Q.load([ "mario_small.png","mario_small.json", 
-		"1up.png", "bg.png", "Practica3.tmx", 
+		"1up.png", "bg.png", "Practica3.tmx", "level1.tmx",
 		"tiles32.png", "goomba.png", "bloopa.png",
 		"princess.png", "coin.png", "goomba.json",
 		"bloopa.json", "coin.json", "title-screen.png",
@@ -335,11 +341,13 @@ var Q = window.Q = Quintus()
 	   		);
 	   		*/
 	   		Q.stageTMX("Practica3.tmx", stage);
+			//Q.stageTMX("level1.tmx", stage);
 
 		 	mario = new Q.Mario();
 		 	stage.insert(mario);
 		 	Q.state.set({lives: 0, coins: 0});
 			
+			Q.audio.stop();
 			Q.audio.play("music_main.mp3",{loop: true});
 			//Q.audio.stop();
 			

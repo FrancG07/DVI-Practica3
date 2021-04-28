@@ -130,7 +130,6 @@
    </properties>
   </tile>
  </tileset>
- <tileset firstgid="249" source="tiles mario.tsx"/>
  <imagelayer id="2" name="background">
   <image source="../images/bg.png" width="800" height="600"/>
  </imagelayer>
@@ -353,9 +352,9 @@
     <tile/>
     <tile/>
     <tile gid="49"/>
-    <tile gid="286"/>
+    <tile/>
     <tile gid="49"/>
-    <tile gid="286"/>
+    <tile/>
     <tile gid="49"/>
     <tile/>
     <tile/>

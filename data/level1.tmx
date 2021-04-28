@@ -2,6 +2,12 @@
 <map version="1.5" tiledversion="2021.03.23" orientation="orthogonal" renderorder="right-down" width="100" height="100" tilewidth="32" tileheight="32" infinite="1" nextlayerid="9" nextobjectid="47">
  <tileset firstgid="1" name="TilesMario" tilewidth="32" tileheight="32" tilecount="228" columns="19">
   <image source="../images/tiles32.png" trans="ff00ff" width="608" height="384"/>
+  <tile id="147">
+   <objectgroup draworder="index" id="2">
+    <object id="1" x="14.2105" y="16.5789"/>
+    <object id="2" x="1.97368" y="8.02632" width="12.2368" height="12.7632"/>
+   </objectgroup>
+  </tile>
  </tileset>
  <tileset firstgid="229" name="Goomba" tilewidth="32" tileheight="32" tilecount="12" columns="4">
   <properties>
@@ -124,6 +130,7 @@
    </properties>
   </tile>
  </tileset>
+ <tileset firstgid="249" source="tiles mario.tsx"/>
  <imagelayer id="2" name="background">
   <image source="../images/bg.png" width="800" height="600"/>
  </imagelayer>
@@ -346,9 +353,9 @@
     <tile/>
     <tile/>
     <tile gid="49"/>
-    <tile/>
+    <tile gid="286"/>
     <tile gid="49"/>
-    <tile/>
+    <tile gid="286"/>
     <tile gid="49"/>
     <tile/>
     <tile/>
@@ -5817,6 +5824,6 @@
   <object id="46" gid="248" x="2080" y="416" width="32" height="32"/>
  </objectgroup>
  <objectgroup id="7" name="NPCs">
-  <object id="14" gid="244" x="1185" y="541.333" width="30" height="48"/>
+  <object id="14" gid="244" x="6528" y="544" width="30" height="48"/>
  </objectgroup>
 </map>

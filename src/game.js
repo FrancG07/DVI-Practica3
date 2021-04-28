@@ -23,6 +23,10 @@ var Q = window.Q = Quintus()
 			died: false
 	      });
 		  this.add("2d, platformerControls, animation, tween");
+		  Q.input.on("up", this, function(){
+			  if(this.p.vy == 0)
+			  Q.audio.play("jump_small.mp3")
+		  });
 	    },
 		step: function(dt){
 			
@@ -49,6 +53,7 @@ var Q = window.Q = Quintus()
 			
 		},
 		die: function(){
+			if(this.p.died) return;
 			this.p.died = true;
 			Q.audio.stop();
 			Q.audio.play("music_die.mp3");
@@ -58,7 +63,7 @@ var Q = window.Q = Quintus()
 			this.animate({y: this.p.y+60}, 1/2, Q.Easing.Linear,
 						{callback: function(){
 			Q.stage().pause();
-			Q.stageScene("endGame",1, {
+			Q.stageScene("endGame",2, {
 				label: "You lose"
 			})}})}});
 		},
@@ -276,9 +281,10 @@ var Q = window.Q = Quintus()
 		},
 		collision: function(col){
 			if(col.obj.isA("Mario")){
+				Q.audio.stop("music_main.mp3");
 				Q.audio.play("music_level_complete.mp3");
 				Q.stage().pause();
-				Q.stageScene("endGame",1, {
+				Q.stageScene("endGame",2, {
 					label: "You win!"
 				});
 			}
@@ -334,17 +340,6 @@ var Q = window.Q = Quintus()
 		 	stage.insert(mario);
 		 	Q.state.set({lives: 0, coins: 0});
 			
-			var container = stage.insert(new Q.UI.Container({
-				x: Q.width/2, y:0, fill: "rgba(0,0,0,0.5)"
-			}));
-			var labelL = container.insert(new Q.UI.Text({
-				x:0, y: 0, label: ("Lives: " + Q.state.get("lives"))
-			}));
-			var labelC = container.insert(new Q.UI.Text({
-				x:labelL.p.w+30, y: 0, label: ("Coins: " + Q.state.get("lives"))
-			}));
-			
-			
 			Q.audio.play("music_main.mp3",{loop: true});
 			//Q.audio.stop();
 			
@@ -355,6 +350,23 @@ var Q = window.Q = Quintus()
 		        mario.destroy();
 		    });
 			//container.fit(200);
+	   });
+	   
+	   Q.scene("hud", function(stage){
+		  label_lives = new Q.UI.Text({x:Q.width/3, y:50, label: "Lives: 0"});
+		  stage.insert(label_lives);
+		  Q.state.on("change.lives",this,function(){
+			  if(Q.state.get("lives") < 0)
+				label_lives.p.label = "Lives: 0";
+			else
+				label_lives.p.label = "Lives: " + Q.state.get("lives");
+		  })
+		  
+		  label_coins = new Q.UI.Text({x:Q.width/3*2, y:50, label: "Coins: 0"});
+		  stage.insert(label_coins);
+		  Q.state.on("change.coins",this,function(){
+			  label_coins.p.label = "Coins: " + Q.state.get("coins");
+		  })
 	   });
 
 	   Q.scene('endGame',function(stage) {
@@ -373,13 +385,14 @@ var Q = window.Q = Quintus()
 				Q.clearStages();
 				Q.stageScene('mainTitle');
 			});
-			
-			//Q.audio.stop();
-			//Q.audio.play("music_die.mp3");
-			/*Q.input.on("confirm",this, function(){
-				Q.stageScene('level1');
-			});*/
+			Q.input.on("confirm",this,function() {
+				Q.clearStages();
+				Q.stageScene('mainTitle');
+				Q.input.off("confirm",this);
+			});
 
+			Q.audio.stop();
+			
 			// Expand the container to visibly fit it's contents
 			// (with a padding of 20 pixels)
 			container.fit(20);
@@ -392,9 +405,17 @@ var Q = window.Q = Quintus()
 			var button = container.insert(new Q.UI.Button({
 				x: 0, y: 0, fill: "#CCCCCC", asset: "title-screen.png"
 			}));
-
+			
 			button.on("click", function(){
-				Q.stageScene('level1');
+				Q.clearStages();
+				Q.stageScene('level1', 1);
+				Q.stageScene('hud', 2);
+			});
+			Q.input.on("confirm",this,function() {
+				Q.clearStages();
+				Q.stageScene('level1', 1);
+				Q.stageScene('hud', 2);
+				Q.input.off("confirm",this);
 			});
 
 			container.fit(20);

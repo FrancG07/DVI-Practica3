@@ -64,7 +64,7 @@ var Q = window.Q = Quintus()
 				this.die();
 			}
 			
-			if(this.p.died){
+			if(this.p.died || this.p.hited){
 				this.p.vx = 0;
 			}
 			if(this.p.vx > 0){

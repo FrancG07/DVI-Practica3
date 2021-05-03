@@ -1,7 +1,37 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.5" tiledversion="2021.03.23" orientation="orthogonal" renderorder="right-down" width="500" height="100" tilewidth="32" tileheight="32" infinite="0" nextlayerid="9" nextobjectid="128">
+<map version="1.5" tiledversion="1.5.0" orientation="orthogonal" renderorder="right-down" width="500" height="100" tilewidth="32" tileheight="32" infinite="0" nextlayerid="9" nextobjectid="128">
  <tileset firstgid="1" name="TilesMario" tilewidth="32" tileheight="32" tilecount="228" columns="19">
   <image source="../images/tiles32.png" trans="ff00ff" width="608" height="384"/>
+  <tile id="4">
+   <properties>
+    <property name="sensor" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="5">
+   <properties>
+    <property name="sensor" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="6">
+   <properties>
+    <property name="sensor" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="7">
+   <properties>
+    <property name="sensor" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="24">
+   <properties>
+    <property name="sensor" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="25">
+   <properties>
+    <property name="sensor" type="bool" value="true"/>
+   </properties>
+  </tile>
  </tileset>
  <tileset firstgid="229" name="Goomba" tilewidth="32" tileheight="32" tilecount="12" columns="4">
   <properties>
@@ -7658,7 +7688,7 @@
    <tile/>
    <tile/>
    <tile/>
-   <tile/>
+   <tile gid="42"/>
    <tile gid="43"/>
    <tile/>
    <tile/>
@@ -7793,7 +7823,7 @@
    <tile/>
    <tile/>
    <tile/>
-   <tile/>
+   <tile gid="42"/>
    <tile gid="43"/>
    <tile/>
    <tile/>
@@ -7809,7 +7839,7 @@
    <tile/>
    <tile/>
    <tile/>
-   <tile/>
+   <tile gid="42"/>
    <tile gid="43"/>
    <tile/>
    <tile gid="4"/>
@@ -7828,7 +7858,7 @@
    <tile/>
    <tile/>
    <tile/>
-   <tile/>
+   <tile gid="5"/>
    <tile/>
    <tile/>
    <tile/>
@@ -8157,10 +8187,10 @@
    <tile/>
    <tile/>
    <tile/>
-   <tile/>
+   <tile gid="3"/>
    <tile gid="61"/>
    <tile gid="62"/>
-   <tile/>
+   <tile gid="3"/>
    <tile/>
    <tile/>
    <tile/>
@@ -8292,9 +8322,10 @@
    <tile/>
    <tile/>
    <tile/>
-   <tile/>
+   <tile gid="3"/>
    <tile gid="61"/>
    <tile gid="62"/>
+   <tile gid="3"/>
    <tile/>
    <tile/>
    <tile/>
@@ -8307,8 +8338,7 @@
    <tile/>
    <tile/>
    <tile/>
-   <tile/>
-   <tile/>
+   <tile gid="3"/>
    <tile gid="61"/>
    <tile gid="62"/>
    <tile gid="4"/>
@@ -50160,7 +50190,7 @@
   <object id="104" gid="229" x="4384" y="544" width="32" height="32"/>
   <object id="105" gid="241" x="5312" y="384" width="32" height="32"/>
   <object id="106" gid="241" x="5408" y="384" width="32" height="32"/>
-  <object id="109" gid="229" x="5664" y="480" width="32" height="32"/>
+  <object id="109" gid="229" x="5629" y="511" width="32" height="32"/>
   <object id="110" gid="229" x="5536" y="448" width="32" height="32"/>
   <object id="111" gid="229" x="5024" y="512" width="32" height="32"/>
   <object id="112" gid="229" x="5120" y="512" width="32" height="32"/>

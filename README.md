@@ -23,3 +23,4 @@ El enlace para probar esta versión es [este](https://francg07.github.io/DVI-Pra
 - Mejoras y ampliaciones
   - Vidas
   - Nuevos niveles
+  - Nuevos enemigos: piranha

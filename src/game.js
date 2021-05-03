@@ -234,6 +234,20 @@ var Q = window.Q = Quintus()
 		}
 	});
 
+	Q.Sprite.extend("Piranha", {
+		init: function(p){
+			this._super(p, {
+				sheet: "piranha",
+				sprite: "piranha_anim",
+				frame: 0,
+				scale: 1
+			});
+			this.add('2d, animation, defaultEnemy');
+			this.on("hit", this, "hitMario");
+			this.play("bite");
+		}
+	});
+
 	Q.Sprite.extend("Peach", {
 		init: function(p){
 			this._super(p, {
@@ -265,13 +279,14 @@ var Q = window.Q = Quintus()
 		"bloopa.json", "coin.json", "title-screen.png",
 		"music_main.mp3", "kill_enemy.mp3", "1up.mp3",
 		"coin.mp3", "jump_small.mp3", "music_level_complete.mp3",
-		"music_die.mp3", "ouch.mp3"], 
+		"music_die.mp3", "ouch.mp3", "piranha.png", "piranha.json"], 
 		function() {
 	 
 		Q.compileSheets("mario_small.png","mario_small.json");
 		Q.compileSheets("goomba.png", "goomba.json");
 		Q.compileSheets("bloopa.png", "bloopa.json");
 		Q.compileSheets("coin.png", "coin.json");
+		Q.compileSheets("piranha.png", "piranha.json");
 
 		Q.animations("mario_anim",{
 			walk_right: {frames: [1,2,3],rate: 1/6, next: "parado_r" },
@@ -294,7 +309,9 @@ var Q = window.Q = Quintus()
 		Q.animations("coin_anim",{
 			shine: {frames: [0,1,2],rate: 1/3}
 		});
-		
+		Q.animations("piranha_anim", {
+			bite: {frames: [0,1], rate: 0.5}
+		});		
 		
 	   Q.scene("levelBase", function(stage) {
 		   

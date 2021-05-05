@@ -30,8 +30,9 @@ var Q = window.Q = Quintus()
 				
 				this.killed = true;
 				collision.obj.p.vy = -200;
+				this.p.sensor = true;
 				Q.audio.play("kill_enemy.mp3");
-				console.log("Goomba dies");
+				console.log("Enemy dies");
 				
 				this.animate({y: this.p.y+100, x: this.p.x}, 1, Q.Easing.Linear,
 							{callback: function(){this.destroy()}});
@@ -103,7 +104,7 @@ var Q = window.Q = Quintus()
 			
 			Q.audio.stop();
 			Q.audio.play("music_die.mp3");
-			
+			this.p.sensor = true;
 			this.play("morir");
 			this.animate({y: this.p.y-30}, 1.5, Q.Easing.Linear, 
 				{callback: function(){
